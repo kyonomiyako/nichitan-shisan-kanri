@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-b!fqu-1p0&y^l$m_%+7@)kh_2eqt-e&y-8^)x@tuu4so07!g1f"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'nichitan-app.onrender.com']
 
@@ -124,3 +124,5 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'  # 任意
 # ログインページのURL（@login_required 未ログイン時のリダイレクト先）
 LOGIN_URL = '/accounts/login/'
+# 本番環境用 静的ファイル配置先
+STATIC_ROOT = BASE_DIR / 'staticfiles'
