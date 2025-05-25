@@ -25,8 +25,7 @@ SECRET_KEY = "django-insecure-b!fqu-1p0&y^l$m_%+7@)kh_2eqt-e&y-8^)x@tuu4so07!g1f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['nichitan-app.onrender.com', 'localhost', '127.0.0.1']
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'nichitan-app.onrender.com']
 
 
 # Application definition
