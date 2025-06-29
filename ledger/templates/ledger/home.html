@@ -8,9 +8,34 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <style>
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            margin-right: 1rem;
+        }
         .chart-container {
             max-width: 400px;
             overflow-x: auto;
+        }
+        .form-check-inline input[type="radio"] {
+            display: none;
+        }
+        .form-check-inline label {
+            border: 1px solid #007bff;
+            border-radius: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            cursor: pointer;
+            color: #007bff;
+            margin-right: 0.5rem;
+        }
+        .form-check-inline input[type="radio"]:checked + label {
+            background-color: #007bff;
+            color: white;
         }
     </style>
 </head>
@@ -31,23 +56,23 @@
     {% csrf_token %}
 
     <div class="mb-3">
-        <label class="form-label fw-bold">収入 or 支出</label><br>
-        <div class="btn-group" role="group">
+        <label class="form-label fw-bold">{{ entry_form.entry_type.label }}</label><br>
+        <div class="radio-group">
             {% for radio in entry_form.entry_type %}
-                <label class="btn btn-outline-primary">
-                    {{ radio.tag }} {{ radio.choice_label }}
-                </label>
+                <div class="form-check form-check-inline">
+                    {{ radio.tag }}<label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                </div>
             {% endfor %}
         </div>
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">頻度</label><br>
-        <div class="btn-group" role="group">
+        <label class="form-label fw-bold">{{ entry_form.frequency.label }}</label><br>
+        <div class="radio-group">
             {% for radio in entry_form.frequency %}
-                <label class="btn btn-outline-secondary">
-                    {{ radio.tag }} {{ radio.choice_label }}
-                </label>
+                <div class="form-check form-check-inline">
+                    {{ radio.tag }}<label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                </div>
             {% endfor %}
         </div>
     </div>
