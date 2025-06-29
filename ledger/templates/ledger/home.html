@@ -8,32 +8,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <style>
-        .radio-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .radio-group label {
-            display: flex;
-            align-items: center;
-            margin-right: 1rem;
-        }
-        .chart-container {
-            max-width: 400px;
-            overflow-x: auto;
-        }
         .toggle-button {
+            margin: 0.25rem;
             padding: 0.5rem 1rem;
             border: 1px solid #007bff;
+            border-radius: 0.3rem;
             background-color: white;
             color: #007bff;
-            border-radius: 0.25rem;
             cursor: pointer;
-            margin-right: 0.5rem;
         }
         .toggle-button.active {
             background-color: #007bff;
             color: white;
+        }
+        .toggle-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
     </style>
 </head>
@@ -55,22 +46,22 @@
 
     <div class="mb-3">
         <label class="form-label fw-bold">収入 or 支出</label><br>
-        <div>
+        <input type="hidden" name="entry_type" id="entry_type_input">
+        <div class="toggle-group" id="entry_type_buttons">
             <button type="button" class="toggle-button" data-value="income">収入</button>
             <button type="button" class="toggle-button" data-value="expense">支出</button>
-            <input type="hidden" name="entry_type" id="entry_type_input">
         </div>
     </div>
 
     <div class="mb-3">
         <label class="form-label fw-bold">頻度</label><br>
-        <div>
+        <input type="hidden" name="frequency" id="frequency_input">
+        <div class="toggle-group" id="frequency_buttons">
             <button type="button" class="toggle-button" data-value="1">毎日</button>
             <button type="button" class="toggle-button" data-value="7">毎週</button>
             <button type="button" class="toggle-button" data-value="30.4">毎月</button>
             <button type="button" class="toggle-button" data-value="365">毎年</button>
             <button type="button" class="toggle-button" data-value="9999">一回きり</button>
-            <input type="hidden" name="frequency" id="frequency_input">
         </div>
     </div>
 
@@ -88,18 +79,27 @@
 </form>
 
 <script>
-    document.querySelectorAll(".toggle-button").forEach(button => {
-        button.addEventListener("click", function () {
-            const group = this.parentElement;
-            group.querySelectorAll(".toggle-button").forEach(btn => btn.classList.remove("active"));
-            this.classList.add("active");
+    function setupToggleGroup(groupId, inputId) {
+        const group = document.getElementById(groupId);
+        const input = document.getElementById(inputId);
+        const buttons = group.querySelectorAll(".toggle-button");
 
-            const inputId = group.querySelector("input[type='hidden']").id;
-            document.getElementById(inputId).value = this.dataset.value;
+        buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                buttons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                input.value = btn.getAttribute("data-value");
+            });
         });
-    });
+    }
+
+    setupToggleGroup("entry_type_buttons", "entry_type_input");
+    setupToggleGroup("frequency_buttons", "frequency_input");
 </script>
 
+<!-- 以下略。既存の表示部分やチャート、リスト、フォームなど -->
+</body>
+</html>
 <!-- 以下：既存の表示・編集・削除・円グラフなどのセクション省略してOK -->
 
 </body>
