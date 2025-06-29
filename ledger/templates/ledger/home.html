@@ -34,9 +34,8 @@
         <label class="form-label fw-bold">収入 or 支出</label><br>
         <div class="btn-group" role="group">
             {% for radio in entry_form.entry_type %}
-                {{ radio.tag }}
-                <label class="btn btn-outline-primary" for="{{ radio.id_for_label }}">
-                    {{ radio.choice_label }}
+                <label class="btn btn-outline-primary">
+                    {{ radio.tag }} {{ radio.choice_label }}
                 </label>
             {% endfor %}
         </div>
@@ -46,9 +45,8 @@
         <label class="form-label fw-bold">頻度</label><br>
         <div class="btn-group" role="group">
             {% for radio in entry_form.frequency %}
-                {{ radio.tag }}
-                <label class="btn btn-outline-secondary" for="{{ radio.id_for_label }}">
-                    {{ radio.choice_label }}
+                <label class="btn btn-outline-secondary">
+                    {{ radio.tag }} {{ radio.choice_label }}
                 </label>
             {% endfor %}
         </div>
