@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -26,7 +27,6 @@
 </head>
 <body class="container py-4" style="max-width: 720px;">
 
-<!-- ✅ アプリ名と説明文をスマホ向けに洗練 -->
 <h1 class="mb-1 fw-bold text-primary">日単位資産管理</h1>
 <p class="text-muted mb-4 small">
     <span class="me-1">📊</span>毎日いくらまで使えるかがわかる、超シンプルな家計簿アプリです。
@@ -37,27 +37,18 @@
 <div class="alert alert-info">{{ allowance_str }}</div>
 {% endif %}
 
-<!-- ◆ 記録フォーム：選択時にボタンの色が変わるよう active クラス付加 -->
 <h2 class="mt-4">新しい記録を追加</h2>
 <form method="post" class="mb-4">
     {% csrf_token %}
 
     <div class="mb-3">
         <label class="form-label fw-bold">{{ entry_form.entry_type.label }}</label><br>
-        {% for radio in entry_form.entry_type %}
-            <label class="form-check-label me-3">
-                {{ radio.tag }} {{ radio.choice_label }}
-            </label>
-        {% endfor %}
+        {{ entry_form.entry_type }}
     </div>
 
     <div class="mb-3">
         <label class="form-label fw-bold">{{ entry_form.frequency.label }}</label><br>
-        {% for radio in entry_form.frequency %}
-            <label class="form-check-label me-3">
-                {{ radio.tag }} {{ radio.choice_label }}
-            </label>
-        {% endfor %}
+        {{ entry_form.frequency }}
     </div>
 
     <div class="mb-3">
@@ -73,8 +64,6 @@
     <button type="submit" class="btn btn-success btn-lg shadow rounded w-100">＋ 登録する</button>
 </form>
 
-
-
 <form method="get" class="mb-3">
     <label for="sort" class="form-label">並び順：</label>
     <select name="sort" id="sort" onchange="this.form.submit()" class="form-select w-auto d-inline-block">
@@ -86,7 +75,6 @@
 </form>
 
 <h2>収入の記録（合計：+{{ sum_income|floatformat:0 }}円/日）</h2>
-<!-- ◆ 記録カード：収入 -->
 {% for e in income_entries %}
 <div class="card border-primary mb-3">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -113,8 +101,8 @@
     </div>
 </div>
 {% endfor %}
+
 <h2>支出の記録（合計：-{{ sum_expense|floatformat:0 }}円/日）</h2>
-<!-- ◆ 記録カード：支出 -->
 {% for e in expense_entries %}
 <div class="card border-danger mb-3">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -147,7 +135,6 @@
     <canvas id="expensePieChart"></canvas>
 </div>
 
-
 <h2 class="mt-4">目標年間貯金額の設定</h2>
 <form method="post">{% csrf_token %}
     {{ goal_form.as_p }}
@@ -157,7 +144,6 @@
 <footer class="text-center mt-5 text-muted small">
   <a href="{% url 'terms' %}">利用規約</a> ｜ <a href="{% url 'privacy' %}">プライバシーポリシー</a>
 </footer>
-
 
 </body>
 </html>
