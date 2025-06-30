@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>日単位資産管理 - あなたの一日をプラスに</title>
+    <title>日単位貯金 - あなたの一日をプラスに</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -26,15 +26,33 @@
             flex-wrap: wrap;
             gap: 0.5rem;
         }
+        .login-info {
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .highlight-daily {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #198754;
+        }
     </style>
 </head>
-<body class="container py-4" style="max-width: 720px;">
+<body class="container py-4" style="max-width: 720px; position: relative;">
 
-<h1 class="mb-1 fw-bold text-primary">日単位資産管理</h1>
+<div class="login-info">
+    {% if user.is_authenticated %}
+        ログイン中：{{ user.username }} さん
+    {% endif %}
+</div>
+
+<h1 class="mb-1 fw-bold text-primary">日単位貯金</h1>
 <p class="text-muted mb-4 small">
-    <span class="me-1">📊</span>毎日いくらまで使えるかがわかる、超シンプルな家計簿アプリです。
+    <span class="me-1">📊</span>毎日いくらまで使えるかわかる！
 </p>
-<h2 class="mb-3">{{ daily_str }} <span class="fs-6 text-muted ms-2">ログイン中：{{ user.username }} さん</span></h2>
+<h2 class="mb-3"><span class="highlight-daily">{{ daily_str }}</span></h2>
 
 {% if allowance_str %}
 <div class="alert alert-info">{{ allowance_str }}</div>
@@ -97,13 +115,11 @@
     setupToggleGroup("frequency_buttons", "frequency_input");
 </script>
 
-<!-- 以下略。既存の表示部分やチャート、リスト、フォームなど -->
-</body>
-</html>
 <!-- 以下：既存の表示・編集・削除・円グラフなどのセクション省略してOK -->
 
 </body>
 </html>
+
 <h2>収入の記録（合計：+{{ sum_income|floatformat:0 }}円/日）</h2>
 {% for e in income_entries %}
 <div class="card border-primary mb-3">
