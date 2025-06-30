@@ -29,3 +29,6 @@ class EntryForm(forms.Form):
         required=True,
         error_messages={'required': '項目を入力してください'}
     )
+
+class GoalForm(forms.Form):
+    goal = forms.IntegerField(label='目標年間貯金額', required=False)
