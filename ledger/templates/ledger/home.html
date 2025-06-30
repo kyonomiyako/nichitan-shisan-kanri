@@ -38,10 +38,6 @@
             font-weight: bold;
             color: #198754;
         }
-        .chart-container {
-            max-width: 400px;
-            margin: 0 auto;
-        }
     </style>
 </head>
 <body class="container py-4" style="max-width: 720px; position: relative;">
@@ -132,8 +128,7 @@
     <div class="card-body p-2 small d-flex justify-content-between align-items-start">
         <div>
             <strong>金額:</strong> {{ e.amount }}円　
-            <strong>頻度:</strong> {{ e.frequency }}　
-            <strong>カテゴリ:</strong> {{ e.category }}
+            <strong>頻度:</strong> {{ e.frequency }}
         </div>
         <div class="text-end">
             <form method="post" action="{% url 'delete_entry' e.id %}" class="d-inline">{% csrf_token %}
@@ -160,8 +155,7 @@
     <div class="card-body p-2 small d-flex justify-content-between align-items-start">
         <div>
             <strong>金額:</strong> {{ e.amount }}円　
-            <strong>頻度:</strong> {{ e.frequency }}　
-            <strong>カテゴリ:</strong> {{ e.category }}
+            <strong>頻度:</strong> {{ e.frequency }}
         </div>
         <div class="text-end">
             <form method="post" action="{% url 'delete_entry' e.id %}" class="d-inline">{% csrf_token %}
@@ -174,39 +168,6 @@
     </div>
 </div>
 {% endfor %}
-
-<h2 class="mt-4">支出の内訳（名目別）</h2>
-<div class="chart-container">
-    <canvas id="expensePieChart"></canvas>
-</div>
-
-<script>
-    const ctx = document.getElementById('expensePieChart').getContext('2d');
-    const expensePieChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: {{ chart_labels|safe }},
-            datasets: [{
-                data: {{ chart_values|safe }},
-                backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-                    '#FF9F40', '#C9CBCF'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                datalabels: {
-                    display: true,
-                    formatter: (value, ctx) => value + '円',
-                    color: '#000'
-                }
-            }
-        },
-        plugins: [ChartDataLabels]
-    });
-</script>
 
 <h2 class="mt-4">目標年間貯金額の設定</h2>
 <form method="post">{% csrf_token %}

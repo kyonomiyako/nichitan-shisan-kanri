@@ -94,6 +94,9 @@ def home(request):
             income_entries.append(data)
         daily_net += daily
 
+    # 支出リストを daily の高い順にソート
+    expense_entries.sort(key=lambda x: x['daily'], reverse=True)
+
     daily_str = f"{daily_net:+.0f}円/日"
     chart_labels = list(expense_by_note.keys())
     chart_values = list(expense_by_note.values())
