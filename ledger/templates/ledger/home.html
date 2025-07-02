@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -56,50 +57,66 @@
 <div class="alert alert-info">{{ allowance_str }}</div>
 {% endif %}
 
-<div class="card mb-4">
-  <div class="card-body">
-    <h2 class="h5 mb-3">新しい記録を追加</h2>
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label fw-bold">収入 or 支出</label><br>
-            <input type="hidden" name="entry_type" id="entry_type_input">
-            <div class="toggle-group" id="entry_type_buttons">
-                <button type="button" class="toggle-button" data-value="income">収入</button>
-                <button type="button" class="toggle-button" data-value="expense">支出</button>
-            </div>
-        </div>
+<h2 class="mt-4">新しい記録を追加</h2>
+<form method="post" class="mb-4">
+    {% csrf_token %}
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">頻度</label><br>
-            <input type="hidden" name="frequency" id="frequency_input">
-            <div class="toggle-group" id="frequency_buttons">
-                <button type="button" class="toggle-button" data-value="1">毎日</button>
-                <button type="button" class="toggle-button" data-value="7">毎週</button>
-                <button type="button" class="toggle-button" data-value="30.4">毎月</button>
-                <button type="button" class="toggle-button" data-value="365">毎年</button>
-                <button type="button" class="toggle-button" data-value="9999">一回きり</button>
-            </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">収入 or 支出</label><br>
+        <input type="hidden" name="entry_type" id="entry_type_input">
+        <div class="toggle-group" id="entry_type_buttons">
+            <button type="button" class="toggle-button" data-value="income">収入</button>
+            <button type="button" class="toggle-button" data-value="expense">支出</button>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">金額</label>
-            {{ entry_form.amount }}
+    <div class="mb-3">
+        <label class="form-label fw-bold">頻度</label><br>
+        <input type="hidden" name="frequency" id="frequency_input">
+        <div class="toggle-group" id="frequency_buttons">
+            <button type="button" class="toggle-button" data-value="1">毎日</button>
+            <button type="button" class="toggle-button" data-value="7">毎週</button>
+            <button type="button" class="toggle-button" data-value="30.4">毎月</button>
+            <button type="button" class="toggle-button" data-value="365">毎年</button>
+            <button type="button" class="toggle-button" data-value="9999">一回きり</button>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">項目</label>
-            {{ entry_form.note }}
-        </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">金額</label>
+        {{ entry_form.amount }}
+    </div>
 
-        <button type="submit" class="btn btn-success btn-lg shadow rounded w-100">＋ 登録する</button>
-    </form>
-  </div>
-</div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">項目</label>
+        {{ entry_form.note }}
+    </div>
+
+    <button type="submit" class="btn btn-success btn-lg shadow rounded w-100">＋ 登録する</button>
+</form>
+
+<script>
+    function setupToggleGroup(groupId, inputId) {
+        const group = document.getElementById(groupId);
+        const input = document.getElementById(inputId);
+        const buttons = group.querySelectorAll(".toggle-button");
+
+        buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                buttons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                input.value = btn.getAttribute("data-value");
+            });
+        });
+    }
+
+    setupToggleGroup("entry_type_buttons", "entry_type_input");
+    setupToggleGroup("frequency_buttons", "frequency_input");
+</script>
 
 <h2>収入の記録（合計：+{{ sum_income|floatformat:0 }}円/日）</h2>
 {% for e in income_entries %}
-<div class="card border-primary mb-3">
+<div class="card border-primary mb-3 shadow-sm">
     <div class="card-header d-flex justify-content-between align-items-center">
         <div>
             <strong class="text-primary">+{{ e.daily|floatformat:0 }}円/日</strong>
@@ -126,8 +143,8 @@
 
 <h2>支出の記録（合計：-{{ sum_expense|floatformat:0 }}円/日）</h2>
 {% for e in expense_entries %}
-<div class="card border-danger border-2 mb-3 shadow-sm">
-    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+<div class="card border-danger mb-3 shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <div>
             <strong class="text-danger">-{{ e.daily|floatformat:0 }}円/日</strong>
             <span class="ms-2 text-muted small">項目: {{ e.note }}</span>
@@ -160,25 +177,6 @@
 <footer class="text-center mt-5 text-muted small">
   <a href="{% url 'terms' %}">利用規約</a> ｜ <a href="{% url 'privacy' %}">プライバシーポリシー</a>
 </footer>
-
-<script>
-    function setupToggleGroup(groupId, inputId) {
-        const group = document.getElementById(groupId);
-        const input = document.getElementById(inputId);
-        const buttons = group.querySelectorAll(".toggle-button");
-
-        buttons.forEach(btn => {
-            btn.addEventListener("click", () => {
-                buttons.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                input.value = btn.getAttribute("data-value");
-            });
-        });
-    }
-
-    setupToggleGroup("entry_type_buttons", "entry_type_input");
-    setupToggleGroup("frequency_buttons", "frequency_input");
-</script>
 
 </body>
 </html>
