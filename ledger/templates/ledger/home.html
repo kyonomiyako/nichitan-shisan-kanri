@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>日単位貯金 - 日々の貯金額が丸わかり！</title>
+    <title>日単位貯金 - あなたの一日をプラスに</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -33,25 +34,10 @@
             font-size: 0.85rem;
             color: #888;
         }
-        .hero-daily {
-            background: linear-gradient(135deg, #e3fcec, #d1f5d3);
-            border-radius: 1rem;
-            padding: 2rem 1rem;
-            text-align: center;
-            font-size: 2.5rem;
+        .highlight-daily {
+            font-size: 2rem;
             font-weight: bold;
             color: #198754;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-daily::before {
-            content: "💰";
-            font-size: 6rem;
-            opacity: 0.1;
-            position: absolute;
-            top: 10px;
-            right: 20px;
         }
     </style>
 </head>
@@ -67,52 +53,53 @@
 <p class="text-muted mb-4 small">
     <span class="me-1">📊</span>毎日いくらまで使えるかわかる！
 </p>
-
-<div class="hero-daily">
-    {{ daily_str }}
-</div>
+<h2 class="mb-3"><span class="highlight-daily">{{ daily_str }}</span></h2>
 
 {% if allowance_str %}
 <div class="alert alert-info">{{ allowance_str }}</div>
 {% endif %}
 
-<h2 class="mt-4">新しい記録を追加</h2>
-<form method="post" class="mb-4">
-    {% csrf_token %}
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <h2 class="card-title h5 mb-3">新しい記録を追加</h2>
+        <form method="post">
+            {% csrf_token %}
 
-    <div class="mb-3">
-        <label class="form-label fw-bold">収入 or 支出</label><br>
-        <input type="hidden" name="entry_type" id="entry_type_input">
-        <div class="toggle-group" id="entry_type_buttons">
-            <button type="button" class="toggle-button" data-value="income">収入</button>
-            <button type="button" class="toggle-button" data-value="expense">支出</button>
-        </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">収入 or 支出</label><br>
+                <input type="hidden" name="entry_type" id="entry_type_input">
+                <div class="toggle-group" id="entry_type_buttons">
+                    <button type="button" class="toggle-button" data-value="income">収入</button>
+                    <button type="button" class="toggle-button" data-value="expense">支出</button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">頻度</label><br>
+                <input type="hidden" name="frequency" id="frequency_input">
+                <div class="toggle-group" id="frequency_buttons">
+                    <button type="button" class="toggle-button" data-value="1">毎日</button>
+                    <button type="button" class="toggle-button" data-value="7">毎週</button>
+                    <button type="button" class="toggle-button" data-value="30.4">毎月</button>
+                    <button type="button" class="toggle-button" data-value="365">毎年</button>
+                    <button type="button" class="toggle-button" data-value="9999">一回きり</button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">金額</label>
+                {{ entry_form.amount }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">項目</label>
+                {{ entry_form.note }}
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg shadow rounded w-100">＋ 登録する</button>
+        </form>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label fw-bold">頻度</label><br>
-        <input type="hidden" name="frequency" id="frequency_input">
-        <div class="toggle-group" id="frequency_buttons">
-            <button type="button" class="toggle-button" data-value="1">毎日</button>
-            <button type="button" class="toggle-button" data-value="7">毎週</button>
-            <button type="button" class="toggle-button" data-value="30.4">毎月</button>
-            <button type="button" class="toggle-button" data-value="365">毎年</button>
-            <button type="button" class="toggle-button" data-value="9999">一回きり</button>
-        </div>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label fw-bold">金額</label>
-        {{ entry_form.amount }}
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label fw-bold">項目</label>
-        {{ entry_form.note }}
-    </div>
-
-    <button type="submit" class="btn btn-success btn-lg shadow rounded w-100">＋ 登録する</button>
-</form>
+</div>
 
 <script>
     function setupToggleGroup(groupId, inputId) {
@@ -132,9 +119,9 @@
     setupToggleGroup("entry_type_buttons", "entry_type_input");
     setupToggleGroup("frequency_buttons", "frequency_input");
 </script>
-
 </body>
 </html>
+
 
 
 <h2>収入の記録（合計：+{{ sum_income|floatformat:0 }}円/日）</h2>
