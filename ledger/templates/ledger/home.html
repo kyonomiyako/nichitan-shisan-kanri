@@ -36,10 +36,6 @@
             font-weight: bold;
             color: #198754;
         }
-        .btn-custom {
-            font-size: 0.85rem;
-            padding: 0.3rem 0.6rem;
-        }
     </style>
 </head>
 <body class="container py-4" style="max-width: 720px; position: relative;">
@@ -60,43 +56,110 @@
 <div class="alert alert-info">{{ allowance_str }}</div>
 {% endif %}
 
-<h2 class="mt-4">新しい記録を追加</h2>
-<form method="post" class="mb-4">
-    {% csrf_token %}
+<div class="card mb-4">
+  <div class="card-body">
+    <h2 class="h5 mb-3">新しい記録を追加</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label fw-bold">収入 or 支出</label><br>
+            <input type="hidden" name="entry_type" id="entry_type_input">
+            <div class="toggle-group" id="entry_type_buttons">
+                <button type="button" class="toggle-button" data-value="income">収入</button>
+                <button type="button" class="toggle-button" data-value="expense">支出</button>
+            </div>
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label fw-bold">収入 or 支出</label><br>
-        <input type="hidden" name="entry_type" id="entry_type_input">
-        <div class="toggle-group" id="entry_type_buttons">
-            <button type="button" class="toggle-button" data-value="income">収入</button>
-            <button type="button" class="toggle-button" data-value="expense">支出</button>
+        <div class="mb-3">
+            <label class="form-label fw-bold">頻度</label><br>
+            <input type="hidden" name="frequency" id="frequency_input">
+            <div class="toggle-group" id="frequency_buttons">
+                <button type="button" class="toggle-button" data-value="1">毎日</button>
+                <button type="button" class="toggle-button" data-value="7">毎週</button>
+                <button type="button" class="toggle-button" data-value="30.4">毎月</button>
+                <button type="button" class="toggle-button" data-value="365">毎年</button>
+                <button type="button" class="toggle-button" data-value="9999">一回きり</button>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">金額</label>
+            {{ entry_form.amount }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">項目</label>
+            {{ entry_form.note }}
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg shadow rounded w-100">＋ 登録する</button>
+    </form>
+  </div>
+</div>
+
+<h2>収入の記録（合計：+{{ sum_income|floatformat:0 }}円/日）</h2>
+{% for e in income_entries %}
+<div class="card border-primary mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <strong class="text-primary">+{{ e.daily|floatformat:0 }}円/日</strong>
+            <span class="ms-2 text-muted small">項目: {{ e.note }}</span>
+        </div>
+        <span class="text-muted small">{{ e.date|date:"Y-m-d" }}</span>
+    </div>
+    <div class="card-body p-2 small d-flex justify-content-between align-items-start">
+        <div>
+            <strong>金額:</strong> {{ e.amount }}円　
+            <strong>頻度:</strong> {{ e.frequency }}
+        </div>
+        <div class="text-end">
+            <form method="post" action="{% url 'delete_entry' e.id %}" class="d-inline">{% csrf_token %}
+                <button class="btn btn-sm btn-outline-danger ms-2">削除</button>
+            </form>
+            <form method="get" action="{% url 'edit_entry' e.id %}" class="d-inline">
+                <button class="btn btn-sm btn-outline-warning ms-1">編集</button>
+            </form>
         </div>
     </div>
+</div>
+{% endfor %}
 
-    <div class="mb-3">
-        <label class="form-label fw-bold">頻度</label><br>
-        <input type="hidden" name="frequency" id="frequency_input">
-        <div class="toggle-group" id="frequency_buttons">
-            <button type="button" class="toggle-button" data-value="1">毎日</button>
-            <button type="button" class="toggle-button" data-value="7">毎週</button>
-            <button type="button" class="toggle-button" data-value="30.4">毎月</button>
-            <button type="button" class="toggle-button" data-value="365">毎年</button>
-            <button type="button" class="toggle-button" data-value="9999">一回きり</button>
+<h2>支出の記録（合計：-{{ sum_expense|floatformat:0 }}円/日）</h2>
+{% for e in expense_entries %}
+<div class="card border-danger border-2 mb-3 shadow-sm">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <div>
+            <strong class="text-danger">-{{ e.daily|floatformat:0 }}円/日</strong>
+            <span class="ms-2 text-muted small">項目: {{ e.note }}</span>
+        </div>
+        <span class="text-muted small">{{ e.date|date:"Y-m-d" }}</span>
+    </div>
+    <div class="card-body p-2 small d-flex justify-content-between align-items-start">
+        <div>
+            <strong>金額:</strong> {{ e.amount }}円　
+            <strong>頻度:</strong> {{ e.frequency }}
+        </div>
+        <div class="text-end">
+            <form method="post" action="{% url 'delete_entry' e.id %}" class="d-inline">{% csrf_token %}
+                <button class="btn btn-sm btn-outline-danger ms-2">削除</button>
+            </form>
+            <form method="get" action="{% url 'edit_entry' e.id %}" class="d-inline">
+                <button class="btn btn-sm btn-outline-warning ms-1">編集</button>
+            </form>
         </div>
     </div>
+</div>
+{% endfor %}
 
-    <div class="mb-3">
-        <label class="form-label fw-bold">金額</label>
-        {{ entry_form.amount }}
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label fw-bold">項目</label>
-        {{ entry_form.note }}
-    </div>
-
-    <button type="submit" class="btn btn-success btn-lg shadow rounded w-100">＋ 登録する</button>
+<h2 class="mt-4">目標年間貯金額の設定</h2>
+<form method="post">{% csrf_token %}
+    {{ goal_form.as_p }}
+    <button class="btn btn-primary w-100">目標を反映</button>
 </form>
+
+<footer class="text-center mt-5 text-muted small">
+  <a href="{% url 'terms' %}">利用規約</a> ｜ <a href="{% url 'privacy' %}">プライバシーポリシー</a>
+</footer>
 
 <script>
     function setupToggleGroup(groupId, inputId) {
@@ -116,71 +179,6 @@
     setupToggleGroup("entry_type_buttons", "entry_type_input");
     setupToggleGroup("frequency_buttons", "frequency_input");
 </script>
-
-<h2>支出の記録（合計：-{{ sum_expense|floatformat:0 }}円/日）</h2>
-{% for e in expense_entries %}
-<div class="card border-danger mb-3 shadow-sm">
-    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-        <div>
-            <strong>-{{ e.daily|floatformat:0 }}円/日</strong>
-            <span class="ms-2">{{ e.note }}</span>
-        </div>
-        <span class="small">{{ e.date|date:"Y-m-d" }}</span>
-    </div>
-    <div class="card-body p-2 small d-flex justify-content-between align-items-center">
-        <div>
-            金額: {{ e.amount }}円　頻度: {{ e.frequency }}
-        </div>
-        <div>
-            <form method="post" action="{% url 'delete_entry' e.id %}" class="d-inline">{% csrf_token %}
-                <button class="btn btn-outline-light btn-custom">削除</button>
-            </form>
-            <form method="get" action="{% url 'edit_entry' e.id %}" class="d-inline">
-                <button class="btn btn-warning btn-custom">編集</button>
-            </form>
-        </div>
-    </div>
-</div>
-{% endfor %}
-
-</body>
-</html>
-
-{% for e in expense_entries %}
-<div class="card border-danger mb-3 shadow-sm">
-    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-        <div>
-            <strong>-{{ e.daily|floatformat:0 }}円/日</strong>
-            <span class="ms-2">項目: {{ e.note }}</span>
-        </div>
-        <span class="small">{{ e.date|date:"Y-m-d" }}</span>
-    </div>
-    <div class="card-body p-2 small d-flex justify-content-between align-items-start">
-        <div>
-            <div><strong>金額:</strong> {{ e.amount }}円</div>
-            <div><strong>頻度:</strong> {{ e.frequency }}</div>
-        </div>
-        <div class="text-end">
-            <form method="post" action="{% url 'delete_entry' e.id %}" class="d-inline">{% csrf_token %}
-                <button class="btn btn-sm btn-outline-light bg-danger text-white me-1">削除</button>
-            </form>
-            <form method="get" action="{% url 'edit_entry' e.id %}" class="d-inline">
-                <button class="btn btn-sm btn-outline-light bg-warning text-dark">編集</button>
-            </form>
-        </div>
-    </div>
-</div>
-{% endfor %}
-
-<h2 class="mt-4">目標年間貯金額の設定</h2>
-<form method="post">{% csrf_token %}
-    {{ goal_form.as_p }}
-    <button class="btn btn-primary w-100">目標を反映</button>
-</form>
-
-<footer class="text-center mt-5 text-muted small">
-  <a href="{% url 'terms' %}">利用規約</a> ｜ <a href="{% url 'privacy' %}">プライバシーポリシー</a>
-</footer>
 
 </body>
 </html>
