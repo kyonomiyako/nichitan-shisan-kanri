@@ -54,46 +54,56 @@
 <h2 class="mb-3"><span class="highlight-daily">{{ daily_str }}</span></h2>
 
 {% if allowance_str %}
-<div class="alert alert-info">{{ allowance_str }}</div>
-{% endif %}
+<h2 class="mb-3">
+    <div class="p-4 rounded text-center shadow" style="background: #d4f7d4; position: relative;">
+        <span class="fs-2 fw-bold text-success">{{ daily_str }}</span>
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="money" style="width: 60px; position: absolute; right: 1rem; bottom: 0.5rem; opacity: 0.2;">
+    </div>
+</h2>{% endif %}
 
-<h2 class="mt-4">新しい記録を追加</h2>
-<form method="post" class="mb-4">
-    {% csrf_token %}
 
-    <div class="mb-3">
-        <label class="form-label fw-bold">収入 or 支出</label><br>
-        <input type="hidden" name="entry_type" id="entry_type_input">
-        <div class="toggle-group" id="entry_type_buttons">
-            <button type="button" class="toggle-button" data-value="income">収入</button>
-            <button type="button" class="toggle-button" data-value="expense">支出</button>
+<!-- 記録追加フォーム（アップグレード版） -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h2 class="card-title h5 mb-3 text-primary">新しい記録を追加</h2>
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">収入 or 支出</label><br>
+            <input type="hidden" name="entry_type" id="entry_type_input">
+            <div class="toggle-group" id="entry_type_buttons">
+                <button type="button" class="toggle-button" data-value="income">収入</button>
+                <button type="button" class="toggle-button" data-value="expense">支出</button>
+            </div>
         </div>
-    </div>
 
-    <div class="mb-3">
-        <label class="form-label fw-bold">頻度</label><br>
-        <input type="hidden" name="frequency" id="frequency_input">
-        <div class="toggle-group" id="frequency_buttons">
-            <button type="button" class="toggle-button" data-value="1">毎日</button>
-            <button type="button" class="toggle-button" data-value="7">毎週</button>
-            <button type="button" class="toggle-button" data-value="30.4">毎月</button>
-            <button type="button" class="toggle-button" data-value="365">毎年</button>
-            <button type="button" class="toggle-button" data-value="9999">一回きり</button>
+        <div class="mb-3">
+            <label class="form-label fw-bold">頻度</label><br>
+            <input type="hidden" name="frequency" id="frequency_input">
+            <div class="toggle-group" id="frequency_buttons">
+                <button type="button" class="toggle-button" data-value="1">毎日</button>
+                <button type="button" class="toggle-button" data-value="7">毎週</button>
+                <button type="button" class="toggle-button" data-value="30.4">毎月</button>
+                <button type="button" class="toggle-button" data-value="365">毎年</button>
+                <button type="button" class="toggle-button" data-value="9999">一回きり</button>
+            </div>
         </div>
-    </div>
 
-    <div class="mb-3">
-        <label class="form-label fw-bold">金額</label>
-        {{ entry_form.amount }}
-    </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold">金額</label>
+            {{ entry_form.amount }}
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label fw-bold">項目</label>
-        {{ entry_form.note }}
-    </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold">項目</label>
+            {{ entry_form.note }}
+        </div>
 
-    <button type="submit" class="btn btn-success btn-lg shadow rounded w-100">＋ 登録する</button>
-</form>
+        <button type="submit" class="btn btn-success btn-lg shadow rounded w-100 mt-3">＋ 登録する</button>
+      </form>
+    </div>
+  </div>
 
 <script>
     function setupToggleGroup(groupId, inputId) {
