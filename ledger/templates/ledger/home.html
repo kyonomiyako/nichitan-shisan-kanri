@@ -72,9 +72,12 @@
     <span class="me-1">📊</span>毎日いくらまで使えるかわかる！
 </p>
 
+{% if daily_str %}
 <div class="hero-daily">
-    {{ daily_str }}
+    +{{ daily_str }}/日
 </div>
+{% endif %}
+
 
 {% if allowance_str %}
 <div class="alert alert-info">{{ allowance_str }}</div>
