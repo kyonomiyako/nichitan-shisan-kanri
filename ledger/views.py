@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -10,6 +11,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 import uuid
+from django.contrib import messages
 
 FREQUENCY_LABELS = {
     1: '毎日',
@@ -95,7 +97,6 @@ def home(request):
             income_entries.append(data)
         daily_net += daily
 
-    # 支出リストを daily の高い順にソート
     expense_entries.sort(key=lambda x: x['daily'], reverse=True)
 
     daily_str = f"{daily_net:+.0f}円/日"
@@ -140,26 +141,14 @@ def edit_entry(request, entry_id):
     if request.method == 'POST':
         form = EntryForm(request.POST)
         if form.is_valid():
-            entry.entry_type = request.POST.get('entry_type')  # JSで設定されるhidden inputから取得
-            entry.amount = form.cleaned_data['amount']
-            entry.frequency = float(form.cleaned_data['frequency'])
             entry.entry_type = form.cleaned_data['entry_type']
             entry.amount = form.cleaned_data['amount']
             entry.frequency = float(form.cleaned_data['frequency'])
             entry.note = form.cleaned_data.get('note')
             entry.category = form.cleaned_data.get('category')
-             entry.save()
-
-            from django.contrib import messages
-            messages.success(request, "記録を更新しました！")
-            return redirect('home')
-(request.POST.get('frequency'))  # 同上
-            entry.note = form.cleaned_data.get('note')
-            entry.category = form.cleaned_data.get('category')
             entry.save()
             messages.success(request, "記録を更新しました！")
             return redirect('home')
-
     else:
         form = EntryForm(initial={
             'entry_type': entry.entry_type,
@@ -225,5 +214,3 @@ def privacy(request):
 
 def about(request):
     return render(request, 'ledger/lp.html')
-
-from django.contrib import messages
