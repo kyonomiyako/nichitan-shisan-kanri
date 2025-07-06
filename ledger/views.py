@@ -55,6 +55,7 @@ def home(request):
     if request.method == 'POST' and 'entry_type' in request.POST:
         entry_form = EntryForm(request.POST)
         if entry_form.is_valid():
+            messages.success(request, "記録を登録しました！")
             Entry.objects.create(
                 user=request.user,
                 entry_type=entry_form.cleaned_data['entry_type'],
@@ -139,13 +140,26 @@ def edit_entry(request, entry_id):
     if request.method == 'POST':
         form = EntryForm(request.POST)
         if form.is_valid():
+            entry.entry_type = request.POST.get('entry_type')  # JSで設定されるhidden inputから取得
+            entry.amount = form.cleaned_data['amount']
+            entry.frequency = floatif form.is_valid():
             entry.entry_type = form.cleaned_data['entry_type']
             entry.amount = form.cleaned_data['amount']
             entry.frequency = float(form.cleaned_data['frequency'])
             entry.note = form.cleaned_data.get('note')
             entry.category = form.cleaned_data.get('category')
-            entry.save()
+             entry.save()
+
+            from django.contrib import messages
+            messages.success(request, "記録を更新しました！")
             return redirect('home')
+(request.POST.get('frequency'))  # 同上
+            entry.note = form.cleaned_data.get('note')
+            entry.category = form.cleaned_data.get('category')
+            entry.save()
+            messages.success(request, "記録を更新しました！")
+            return redirect('home')
+
     else:
         form = EntryForm(initial={
             'entry_type': entry.entry_type,
@@ -211,3 +225,5 @@ def privacy(request):
 
 def about(request):
     return render(request, 'ledger/lp.html')
+
+from django.contrib import messages

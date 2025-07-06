@@ -169,6 +169,17 @@
 {% endif %}
 
 {% if messages %}
+<script>
+    // ✅ 3秒後にメッセージを自動で閉じる
+    setTimeout(function () {
+        const alertEl = document.querySelector(".alert-dismissible");
+        if (alertEl) {
+            const closeBtn = alertEl.querySelector(".btn-close");
+            if (closeBtn) closeBtn.click();
+        }
+    }, 3000);
+</script>
+
   {% for message in messages %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
       {{ message }}
