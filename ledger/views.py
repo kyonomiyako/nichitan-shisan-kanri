@@ -142,7 +142,7 @@ def edit_entry(request, entry_id):
         if form.is_valid():
             entry.entry_type = request.POST.get('entry_type')  # JSで設定されるhidden inputから取得
             entry.amount = form.cleaned_data['amount']
-            entry.frequency = floatif form.is_valid():
+            entry.frequency = float(form.cleaned_data['frequency'])
             entry.entry_type = form.cleaned_data['entry_type']
             entry.amount = form.cleaned_data['amount']
             entry.frequency = float(form.cleaned_data['frequency'])
