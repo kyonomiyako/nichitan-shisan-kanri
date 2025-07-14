@@ -191,7 +191,17 @@
 {% if allowance_str %}
 <div class="alert alert-info">{{ allowance_str }}</div>
 {% endif %}
+{% if progress_str %}
+<div class="alert alert-success">
+  <strong>⏱ {{ progress_str }}</strong>
+</div>
+{% endif %}
 
+{% if future_allowance_str %}
+<div class="alert alert-warning">
+  <strong>📅 {{ future_allowance_str }}</strong>
+</div>
+{% endif %}
 
 <!-- 記録追加フォーム（アップグレード版） -->
 <div class="card mb-4 shadow-sm">

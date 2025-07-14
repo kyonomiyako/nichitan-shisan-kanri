@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -115,6 +114,24 @@ def home(request):
         usable_per_day = daily_net - goal_per_day
         allowance_str = f"目標を達成するには、1日 {usable_per_day:.0f}円 まで使えます"
 
+    # ⏱ 年間進捗の新機能
+    progress_str = None
+    future_allowance_str = None
+    today = datetime.today()
+    start_of_year = datetime(today.year, 1, 1)
+    end_of_year = datetime(today.year, 12, 31)
+    days_elapsed = (today - start_of_year).days + 1
+    days_remaining = (end_of_year - today).days
+
+    accumulated = daily_net * days_elapsed
+    if goal:
+        progress_ratio = (accumulated / goal) * 100
+        progress_str = f"{accumulated:,.0f}円 貯金達成（{progress_ratio:.1f}％）"
+        if days_remaining > 0:
+            needed_amount = goal - accumulated
+            allowable_daily = needed_amount / days_remaining
+            future_allowance_str = f"残り{days_remaining}日、1日 {allowable_daily:.0f}円まで使えます"
+
     return render(request, 'ledger/home.html', {
         'entry_form': entry_form,
         'goal_form': goal_form,
@@ -126,6 +143,8 @@ def home(request):
         'allowance_str': allowance_str,
         'chart_labels': chart_labels,
         'chart_values': chart_values,
+        'progress_str': progress_str,
+        'future_allowance_str': future_allowance_str,
     })
 
 @login_required
