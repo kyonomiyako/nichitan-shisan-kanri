@@ -107,44 +107,26 @@ def home(request):
         goal_obj.amount = goal
         goal_obj.save()
 
-goal = goal_obj.amount
-progress_str = None
-required_per_day_str = None
-
-if goal:
-    today = datetime.today()
-    start_of_year = datetime(today.year, 1, 1)
-    end_of_year = datetime(today.year, 12, 31)
-
-    days_elapsed = (today - start_of_year).days + 1
-    days_remaining = (end_of_year - today).days
-
-    accumulated = daily_net * days_elapsed
-    progress_ratio = (accumulated / goal) * 100
-    progress_str = f"{accumulated / 10000:.1f}万円 貯金達成（{progress_ratio:.1f}％）"
-
-    if days_remaining > 0:
-        needed_amount = goal - accumulated
-        allowable_daily = needed_amount / days_remaining
-        required_per_day_str = f"{goal / 10000:.0f}万円貯金達成には、あと{allowable_daily:.0f}円/日が必要"
-
-    # ⏱ 年間進捗の新機能
+    goal = goal_obj.amount
     progress_str = None
+    required_per_day_str = None
     future_allowance_str = None
-    today = datetime.today()
-    start_of_year = datetime(today.year, 1, 1)
-    end_of_year = datetime(today.year, 12, 31)
-    days_elapsed = (today - start_of_year).days + 1
-    days_remaining = (end_of_year - today).days
 
-    accumulated = daily_net * days_elapsed
     if goal:
+        today = datetime.today()
+        start_of_year = datetime(today.year, 1, 1)
+        end_of_year = datetime(today.year, 12, 31)
+        days_elapsed = (today - start_of_year).days + 1
+        days_remaining = (end_of_year - today).days
+
+        accumulated = daily_net * days_elapsed
         progress_ratio = (accumulated / goal) * 100
-        progress_str = f"{accumulated:,.0f}円 貯金達成（{progress_ratio:.1f}％）"
+        progress_str = f"{accumulated / 10000:.1f}万円 貯金達成（{progress_ratio:.1f}％）"
+
         if days_remaining > 0:
             needed_amount = goal - accumulated
             allowable_daily = needed_amount / days_remaining
-            future_allowance_str = f"残り{days_remaining}日、1日 {allowable_daily:.0f}円まで使えます"
+            required_per_day_str = f"{goal / 10000:.0f}万円貯金達成には、あと{allowable_daily:.0f}円/日が必要"
 
     return render(request, 'ledger/home.html', {
         'entry_form': entry_form,
@@ -154,14 +136,12 @@ if goal:
         'expense_entries': expense_entries,
         'sum_income': sum_income_daily,
         'sum_expense': sum_expense_daily,
-        'allowance_str': allowance_str,
+        'allowance_str': None,
         'chart_labels': chart_labels,
         'chart_values': chart_values,
         'progress_str': progress_str,
-        'future_allowance_str': future_allowance_str,
-        'progress_str': progress_str,
         'required_per_day_str': required_per_day_str,
-
+        'future_allowance_str': future_allowance_str,
     })
 
 @login_required
