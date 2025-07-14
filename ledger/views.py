@@ -107,12 +107,26 @@ def home(request):
         goal_obj.amount = goal
         goal_obj.save()
 
-    goal = goal_obj.amount
-    allowance_str = None
-    if goal:
-        goal_per_day = goal / 365
-        usable_per_day = daily_net - goal_per_day
-        allowance_str = f"目標を達成するには、1日 {usable_per_day:.0f}円 まで使えます"
+goal = goal_obj.amount
+progress_str = None
+required_per_day_str = None
+
+if goal:
+    today = datetime.today()
+    start_of_year = datetime(today.year, 1, 1)
+    end_of_year = datetime(today.year, 12, 31)
+
+    days_elapsed = (today - start_of_year).days + 1
+    days_remaining = (end_of_year - today).days
+
+    accumulated = daily_net * days_elapsed
+    progress_ratio = (accumulated / goal) * 100
+    progress_str = f"{accumulated / 10000:.1f}万円 貯金達成（{progress_ratio:.1f}％）"
+
+    if days_remaining > 0:
+        needed_amount = goal - accumulated
+        allowable_daily = needed_amount / days_remaining
+        required_per_day_str = f"{goal / 10000:.0f}万円貯金達成には、あと{allowable_daily:.0f}円/日が必要"
 
     # ⏱ 年間進捗の新機能
     progress_str = None
@@ -145,6 +159,9 @@ def home(request):
         'chart_values': chart_values,
         'progress_str': progress_str,
         'future_allowance_str': future_allowance_str,
+        'progress_str': progress_str,
+        'required_per_day_str': required_per_day_str,
+
     })
 
 @login_required
